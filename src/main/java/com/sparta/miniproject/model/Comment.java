@@ -18,21 +18,22 @@ public class Comment extends Timestamped {
     @Column(nullable = false)
     private String comment;
 
-    @Column(nullable = false)
-    private Long hobbyId;
+//    @Column(nullable = false)
+//    private Long hobbyId;
 
-//    @ManyToOne
-//    @JoinColumn(name = "hobbyId")
-//    private Hobby hobby;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "userId")
-//    private User user;
+    @ManyToOne
+    @JoinColumn(name = "hobbyId")
+    private Hobby hobby;
 
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private User user;
 
+    public Comment(CommentRequestDto commentRequestDto){
+        this.comment=commentRequestDto.getComment();
+    }
 
-    public Comment(Long hobbyId, CommentRequestDto commentRequestDto) {
-        this.hobbyId = hobbyId;
-        this.comment = commentRequestDto.getComment();
+    public void updateComment(CommentRequestDto requestDto) {
+        this.comment = requestDto.getComment();
     }
 }
