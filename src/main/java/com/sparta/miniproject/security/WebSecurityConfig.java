@@ -8,8 +8,6 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationFilter;
 
 
 @Configuration
@@ -18,6 +16,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private RestAuthenticationFailureHandler restAuthenticationFailureHandler;
+    @Autowired
+    private RestAuthenticationSuccessHandler restAuthenticationSuccessHandler;
+    @Autowired
+    private RestLogoutSucccessHandler restLogoutSucccessHandler;
 
     @Bean
     public BCryptPasswordEncoder encodePassword() { // BCryptPasswordEncoder 은 제공되어짐
@@ -54,6 +56,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                 // 로그아웃 처리 URL
                 .logoutUrl("/user/logout")
+                .logoutSuccessHandler(restLogoutSucccessHandler)
                 .logoutSuccessUrl("/").permitAll()
                 .and()
                 .exceptionHandling()
@@ -68,6 +71,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             authFilter.setPasswordParameter("password");
             authFilter.setAuthenticationManager(this.authenticationManagerBean());
             authFilter.setAuthenticationFailureHandler(restAuthenticationFailureHandler);
+            authFilter.setAuthenticationSuccessHandler(restAuthenticationSuccessHandler);
         } catch (Exception e){
             e.printStackTrace();
         }
