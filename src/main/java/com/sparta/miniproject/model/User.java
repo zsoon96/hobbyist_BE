@@ -16,17 +16,17 @@ public class User extends Timestamped{
     private Long id;
 
     @Column(nullable = false)
-    private String loginId;
+    private String username;
 
     @Column(nullable = false)
-    private String nickName;
+    private String nickname;
 
     @Column(nullable = false)
     private String password;
 
     public User(SignupRequestDto requestDto){
-        this.loginId = requestDto.getLoginId();
-        this.nickName = requestDto.getNickName();
+        this.username = requestDto.getUsername();
+        this.nickname = requestDto.getNickname();
         this.password = requestDto.getPassword();
     }
 
