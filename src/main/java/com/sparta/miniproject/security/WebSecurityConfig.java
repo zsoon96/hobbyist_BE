@@ -50,16 +50,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 // 그 외 어떤 요청이든 '인증'
                 .anyRequest().authenticated()
                 .and()
-// 로그인 기능
-                // [로그인 기능]
-                .formLogin()
-                // 로그인 View 제공 (GET /members/login)
-                .loginPage("/user/login")
-                // 로그인 처리 (POST /members/login)
-                .loginProcessingUrl("/user/login")
-                // 로그인 처리 후 성공 시 URL
-                .defaultSuccessUrl("/index.html").permitAll()
-                .and()
                 // [로그아웃 기능]
                 .logout()
                 // 로그아웃 처리 URL
@@ -73,10 +63,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected RestUsernamePasswordAuthenticationFilter getAuthenticationFilter(){
         RestUsernamePasswordAuthenticationFilter authFilter = new RestUsernamePasswordAuthenticationFilter();
         try{
-            authFilter.setFilterProcessesUrl("/user/login");
-            authFilter.setAuthenticationManager(this.authenticationManagerBean());
+            authFilter.setFilterProcessesUrl("/user/login"); // 로그인에 대한 POST 요청을 받을 url을 정의합니다. 해당 코드가 없으면 정상적으로 작동하지 않습니다.
             authFilter.setUsernameParameter("username");
             authFilter.setPasswordParameter("password");
+            authFilter.setAuthenticationManager(this.authenticationManagerBean());
             authFilter.setAuthenticationFailureHandler(restAuthenticationFailureHandler);
         } catch (Exception e){
             e.printStackTrace();
