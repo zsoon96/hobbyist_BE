@@ -1,4 +1,4 @@
-package com.sparta.miniproject.service;
+package com.sparta.miniproject.service.user;
 
 import com.sparta.miniproject.model.User;
 import com.sparta.miniproject.repository.UserRepository;

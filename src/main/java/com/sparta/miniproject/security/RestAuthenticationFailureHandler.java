@@ -1,6 +1,8 @@
 package com.sparta.miniproject.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sparta.miniproject.utils.userHandler.UserResponseHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -11,24 +13,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashMap;
 import java.util.Map;
 
+// 리팩토링이 필요합니다. 겹치는 부분은 utils 폴더 안에 합쳐두도록 합시다.
 @Component
 public class RestAuthenticationFailureHandler implements AuthenticationFailureHandler {
+
+    @Autowired
+    UserResponseHandler userResponseHandlerHandler;
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse httpServletResponse,
                                         AuthenticationException exception) throws IOException, ServletException{
 
-        httpServletResponse.setContentType("application/json");
-        httpServletResponse.setCharacterEncoding("utf-8");
+        httpServletResponse = userResponseHandlerHandler.setResponse(httpServletResponse);
+        Map<String,Object> response = userResponseHandlerHandler.setMessage("아이디와 비밀번호를 확인해 주세요.", HttpStatus.UNAUTHORIZED);
 
-        Map<String,Object> response = new HashMap<>();
-        response.put("status", String.valueOf(HttpStatus.UNAUTHORIZED));
-        response.put("message","아이디와 비밀번호를 확인해 주세요.");
-
-        httpServletResponse.setStatus(HttpServletResponse.SC_OK);
         OutputStream out = httpServletResponse.getOutputStream();
         ObjectMapper mapper = new ObjectMapper();
         mapper.writerWithDefaultPrettyPrinter().writeValue(out, response);

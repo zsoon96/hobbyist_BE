@@ -1,10 +1,11 @@
 package com.sparta.miniproject.model;
 
-import com.sparta.miniproject.dto.SignupRequestDto;
+import com.sparta.miniproject.dto.user.SignupRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -23,6 +24,9 @@ public class User extends Timestamped{
 
     @Column(nullable = false)
     private String password;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<Hobby> hobbies;
 
     public User(SignupRequestDto requestDto){
         this.username = requestDto.getUsername();

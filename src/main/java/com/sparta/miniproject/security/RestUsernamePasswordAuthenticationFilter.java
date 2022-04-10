@@ -1,7 +1,7 @@
 package com.sparta.miniproject.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sparta.miniproject.dto.LoginRequestDto;
+import com.sparta.miniproject.dto.user.LoginRequestDto;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
