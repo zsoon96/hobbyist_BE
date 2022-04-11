@@ -18,8 +18,18 @@ public class UserResponseHandler {
     }
 
     public Map<String,Object> setMessage(String message, HttpStatus httpStatus){
+
+        String status;
+
+        if ( httpStatus == HttpStatus.OK ){
+            status = "true";
+        } else{
+            status = "false";
+        }
+
         Map<String,Object> response = new HashMap<>();
-        response.put("status", String.valueOf(httpStatus));
+        response.put("status", status);
+        response.put("http", String.valueOf(httpStatus));
         response.put("message",message);
         return response;
     }

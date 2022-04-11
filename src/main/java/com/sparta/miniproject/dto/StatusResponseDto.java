@@ -1,5 +1,6 @@
 package com.sparta.miniproject.dto;
 
+import com.sparta.miniproject.dto.comment.CommentRequestDto;
 import com.sparta.miniproject.model.Comment;
 import com.sparta.miniproject.model.Hobby;
 import com.sparta.miniproject.model.User;
@@ -11,7 +12,8 @@ import org.springframework.http.HttpStatus;
 @NoArgsConstructor
 public class StatusResponseDto {
 
-    private String status = String.valueOf(HttpStatus.OK);
+    private String status = "true";
+    private String http  = String.valueOf(HttpStatus.OK);
     private String message;
 
     public StatusResponseDto(User user){
@@ -26,7 +28,6 @@ public class StatusResponseDto {
         this.message = "게시물을 수정했습니다.";
     }
 
-    // 매개변수가 겹쳐질 수 있으므로, 수정 작업이 필요합니다.
     public StatusResponseDto(Long hobbyId){
         this.message = "게시물을 삭제했습니다.";
     }
@@ -35,8 +36,10 @@ public class StatusResponseDto {
         this.message = "댓글 작성을 완료했습니다.";
     }
 
+    public StatusResponseDto(CommentRequestDto requestDto) { this.message = "댓글 수정을 완료했습니다.";}
+
     public StatusResponseDto(Long commentId, Comment comment){
-        this.message = "댓글을 수정했습니다.";
+        this.message = "댓글 삭제를 완료했습니다.";
     }
 
 }

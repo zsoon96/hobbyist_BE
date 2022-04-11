@@ -15,16 +15,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = IllegalArgumentException.class)
     public Map<String, String> IllegalArgumentHandler(Exception e) {
         Map<String, String> map = new HashMap<>();
-        map.put("status", String.valueOf(HttpStatus.BAD_REQUEST));
+        map.put("status", "false");
         map.put("message", e.getMessage());
+        map.put("http", String.valueOf(HttpStatus.BAD_REQUEST));
         return map;
     }
 
     @ExceptionHandler(value = NullPointerException.class)
     public Map<String, String> NullPointerHandler(Exception e) {
         Map<String, String> map = new HashMap<>();
-        map.put("status", String.valueOf(HttpStatus.BAD_REQUEST));
+        map.put("status", "false");
         map.put("message", e.getMessage());
+        map.put("http", String.valueOf(HttpStatus.BAD_REQUEST));
         return map;
     }
 

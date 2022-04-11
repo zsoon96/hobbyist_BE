@@ -1,7 +1,6 @@
 package com.sparta.miniproject.security;
 
 import com.sparta.miniproject.model.User;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

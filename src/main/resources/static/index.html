@@ -11,8 +11,10 @@
             let username;
             if ( id == 1 ){
                 username = "asfdf"
-            } else {
+            } else if ( id == 0){
                 username = "asdf"
+            } else {
+                username = "unbeatablesj"
             }
             let password = "1234"
             let data = {'username':username, 'password': password};
@@ -49,16 +51,22 @@
         }
 
         function signup(id){
-
-            let username = "asdf"
-            let nickname = "나무늘보"
-            let password = "1234"
+            let username;
+            let nickname;
+            if ( id == 2 ){
+                nickname = "늘보나무";
+                username = "unbeatablesj";
+            } else {
+                nickname = "나무늘보";
+                username = "asdf";
+            }
+            let password = "1234";
             let passwordCheck;
 
-            if ( id == 0 ){
-                passwordCheck = "1234"
-            } else {
+            if ( id == 1 ){
                 passwordCheck = "12345"
+            } else {
+                passwordCheck = "1234"
             }
 
             let data = {'username':username, 'nickname':nickname, 'password': password, 'passwordCheck': passwordCheck};
@@ -76,7 +84,7 @@
 
         function submit(){
 
-            let img = "/asd/ss.jpg";
+            let img;
             let title = "제목";
             let content = "내용";
             let url = "공유주소";
@@ -107,7 +115,7 @@
 
         function modify(){
 
-            let img = "/f/1.pg";
+            let img;
             let title = "수정";
             let content = "수정";
             let url = "수정";
@@ -134,20 +142,87 @@
                 }
             })
         }
+
+        function detail(){
+
+            $.ajax({
+                type:"GET",
+                url: "/api/hobbies/1",
+                success: function(response){
+                    console.log(response)
+                }
+            })
+        }
+
+        function submitComment(){
+
+            let comment = "내용";
+            let data = {'comment': comment};
+
+            $.ajax({
+                type:"POST",
+                url: "/api/comment/1",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: function(response){
+                    console.log(response)
+                }
+            })
+        }
+        function editComment(){
+
+            let comment = "수정";
+            let data = {'comment': comment};
+
+            $.ajax({
+                type:"PUT",
+                url: '/api/comment/1',
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: function(response){
+                    console.log(response)
+                }
+            })
+        }
+
+        function delComment(){
+            $.ajax({
+                type:"DELETE",
+                url: '/api/comment/1',
+                success: function(response){
+                    console.log(response)
+                }
+            })
+        }
+
+        function getComments(){
+
+            $.ajax({
+                type:"GET",
+                url: "/api/hobbies/1/comments",
+                success: function(response){
+                    console.log(response)
+                }
+            })
+        }
     </script>
 
 </head>
 <body>
 <h1>회원가입 테스트 버튼</h1>
-정상 회원가입
+정상 회원가입1
 <button onclick="signup(0)">signup</button>
+정상 회원가입2
+<button onclick="signup(2)">signup</button>
 오류 회원가입
 <button onclick="signup(1)">signup</button>
 <h1>로그인 테스트 버튼</h1>
 오류 로그인
 <button onclick="login(1)">login</button>
-정상 로그인
+정상 로그인1
 <button onclick="login(0)">login</button>
+정상 로그인2
+<button onclick="login(2)">login</button>
 <br>
 <h1>로그인 유지 확인</h1>
 <button onclick="logout()">로그아웃</button>
@@ -159,8 +234,22 @@
 게시글 목록조회
 <button onclick="read()">read</button>
 게시글 수정
-<button onclick="modify()">read</button>
+<button onclick="modify()">modify</button>
 게시글 삭제
-<button onclick="del()">read</button>
+<button onclick="del()">del</button>
+<br>
+<h1>게시글 상세 조회</h1>
+게시글 상세조회
+<button onclick="detail()">submit</button>
+<br>
+<h1>댓글 등록 확인</h1>
+댓글 등록
+<button onclick="submitComment()">submit</button>
+댓글 수정
+<button onclick="editComment()">submit</button>
+댓글 삭제
+<button onclick="delComment()">submit</button>
+댓글 목록
+<button onclick="getComments()">submit</button>
 </body>
 </html>
