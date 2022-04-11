@@ -8,13 +8,17 @@ import com.sparta.miniproject.model.Hobby;
 import com.sparta.miniproject.repository.HobbyRepository;
 import com.sparta.miniproject.repository.UserRepository;
 import com.sparta.miniproject.security.UserDetailsImpl;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -114,11 +118,18 @@ public class HobbyService {
 
         if ( encodedImage != null ){
             // Base64를 디코딩해서 이미지 파일로 만들기
+            String imageName = "image.jpg";
+            String imageBase64 = encodedImage.split(",")[1]; // base64 스트링을 저장
+            byte[] decode = Base64.decode(imageBase64);
+            FileOutputStream fos;
             try {
+                String prePath = "C:\\Users\\unbea\\Desktop\\";
+                File path = new File(prePath + imageName);
+//                path.createNewFile();
+                fos = new FileOutputStream(path);
+                fos.write(decode);
+                fos.close();
 
-                String imageBase46 = encodedImage.split(",")[1]; // base64 스트링을 저장
-                byte[] imageByte = imageBase46.getBytes();
-                BufferedImage img = ImageIO.read(new ByteArrayInputStream(imageByte));
                 // 만들어진 이미지 파일을 저장할 디렉토리 생성
 
                 // 이미지 파일 저장
