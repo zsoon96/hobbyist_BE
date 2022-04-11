@@ -12,11 +12,7 @@ import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -119,23 +115,19 @@ public class HobbyService {
         if ( encodedImage != null ){
             // Base64를 디코딩해서 이미지 파일로 만들기
             String imageName = "image.jpg";
-            String imageBase64 = encodedImage.split(",")[1]; // base64 스트링을 저장
-            byte[] decode = Base64.decode(imageBase64);
-            FileOutputStream fos;
+            String prePath = "C:\\Users\\unbea\\Desktop\\";
             try {
-                String prePath = "C:\\Users\\unbea\\Desktop\\";
-                File path = new File(prePath + imageName);
-//                path.createNewFile();
-                fos = new FileOutputStream(path);
-                fos.write(decode);
-                fos.close();
-
+                String imageBase64 = encodedImage.split(",")[1]; // base64 스트링을 저장
+                byte[] decode = Base64.decode(imageBase64);
+                FileOutputStream fos;
                 // 만들어진 이미지 파일을 저장할 디렉토리 생성
-
                 // 이미지 파일 저장
+                File path = new File(prePath + imageName); // 해당 경로에 파일을 생성한다. 아직 비어있다.
+                fos = new FileOutputStream(path);
+                fos.write(decode); // 이를 통해 생성된 파일의 내용을 작성한다.
+                fos.close(); // 파일을 닫는다.
 
                 // requestDto에 이미지 저장 경로로 할당
-
 
             } catch (IOException e){ // IOException에 대해서 반드시 예외처리를 해야 합니다.
 
