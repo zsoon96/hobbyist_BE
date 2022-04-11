@@ -13,14 +13,14 @@ import java.time.LocalDateTime;
 public class CommentResponseDto {
     private Long id;
     private String comment;
-    private String nickname;
+//    private String nickname;
     private LocalDateTime date;
+    private boolean usable;
 
     public CommentResponseDto(Comment comment) {
         this.id = comment.getId();
         this.comment = comment.getComment();
-        this.nickname = comment.getUser().getNickname();
+//        this.nickname = comment.getUser().getNickname();
         this.date= comment.getModifiedAt();
     }
-
 }

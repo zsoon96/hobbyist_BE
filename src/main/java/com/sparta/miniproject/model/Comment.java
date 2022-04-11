@@ -23,11 +23,11 @@ public class Comment extends Timestamped {
 //    private Long hobbyId;
 
     @ManyToOne
-    @JoinColumn(name = "hobbyId",nullable = false)
+    @JoinColumn(nullable = false)
     private Hobby hobby;
 
     @ManyToOne
-    @JoinColumn(name = "userId",nullable = false)
+    @JoinColumn(name = "userId",nullable = true)
     private User user;
 
 

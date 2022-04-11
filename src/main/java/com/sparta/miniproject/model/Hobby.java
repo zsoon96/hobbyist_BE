@@ -1,5 +1,8 @@
 package com.sparta.miniproject.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.sparta.miniproject.dto.HobbyRequestDto;
+import com.sparta.miniproject.security.UserDetailsImpl;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +15,7 @@ import java.util.List;
 //@Data
 @NoArgsConstructor
 @Entity
-public class Hobby {
+public class Hobby extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,5 +37,14 @@ public class Hobby {
     private User user;
 
     @OneToMany(mappedBy = "hobby", fetch = FetchType.EAGER) // mappedBy 연관관계 주인이 아니다.(FK가 아니다)
+    @JsonIgnoreProperties({"hobby"}) // 무한참조 방지 (Comment 객체에 참조된 hobby 객체 연결을 무시한다.)
     private List<Comment> commentList; // 컬럼 추가 없이 값만 불러오기 위해 JoinColumn 사용x
+
+    public Hobby(UserDetailsImpl userDetails, HobbyRequestDto requestDto){
+        this.title = requestDto.getTitle();
+        this.img = requestDto.getImg();
+        this.content = requestDto.getContent();
+        this.url = requestDto.getUrl();
+        this.user = userDetails.getUser();
+    }
 }

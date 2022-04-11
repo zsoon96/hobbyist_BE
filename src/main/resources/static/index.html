@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script>
+
+        // 게시글 등록
+        function submit(id){
+            let nickname;
+            if( id == 1){
+                nickname = "회원"
+            } else {
+                nickname = "비회원"
+            }
+            let img = "/asd/ss.jpg";
+            let title = "제목";
+            let content = "내용";
+            let url = "공유주소";
+
+            let data = {'nickName':nickname,'img':img, 'title':title, 'content': content, 'url': url};
+
+            $.ajax({
+                type:"POST",
+                url: "/api/hobby",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: function(response){
+                    console.log(response)
+                }
+            })
+        }
+
+        // 댓글 등록
+        function post(){
+            let comment = "댓글 작성 성공"
+
+            let data = {'comment':comment};
+
+            $.ajax({
+                type:"POST",
+                url:`/api/comment/1`,
+                contentType:"application/json",
+                data: JSON.stringify(data),
+                success: function (response){
+                    console.log(response)
+                }
+            })
+        }
+
+        function get(){
+
+            $.ajax({
+                type:"GET",
+                url: "/api/hobbies/1/comments",
+                success: function(response){
+                    console.log(response)
+                }
+            })
+        }
+
+        function put(){
+            let comment = "댓글 수정 성공"
+
+            let data = {'comment':comment};
+
+            $.ajax({
+                type:"PUT",
+                url:`/api/comment/1`,
+                contentType:"application/json",
+                data: JSON.stringify(data),
+                success: function (response){
+                    console.log(response)
+                }
+            })
+        }
+
+        function del(){
+            $.ajax({
+                type:"DELETE",
+                url:`/api/comment/1`,
+                success: function (response){
+                    console.log(response)
+                }
+            })
+        }
+    </script>
+</head>
+<body>
+<h2>게시글 등록</h2>
+<button onclick="submit(1)">등록 성공</button>
+<!--User가 null값이라서 성공-->
+<button onclick="submit(0)">등록 실패</button>
+<h2>댓글 등록</h2>
+<button onclick="post(1)">등록 성공</button>
+<!--User가 null값이라서 성공-->
+<button onclick="post(0)">등록 실패</button>
+<h2>댓글 조회</h2>
+<button onclick="get()">조회</button>
+<h2>댓글 수정</h2>
+<button onclick="put()">수정</button>
+<h2>댓글 삭제</h2>
+<button onclick="del()">삭제</button>
+</body>
+</html>
