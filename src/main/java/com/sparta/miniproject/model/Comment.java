@@ -1,6 +1,7 @@
 package com.sparta.miniproject.model;
 
 import com.sparta.miniproject.dto.CommentRequestDto;
+import com.sparta.miniproject.security.UserDetailsImpl;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,18 +23,21 @@ public class Comment extends Timestamped {
 //    private Long hobbyId;
 
     @ManyToOne
-    @JoinColumn(name = "hobbyId")
+    @JoinColumn(name = "hobbyId",nullable = false)
     private Hobby hobby;
 
     @ManyToOne
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "userId",nullable = false)
     private User user;
 
-    public Comment(CommentRequestDto commentRequestDto){
-        this.comment=commentRequestDto.getComment();
+
+    public void updateComment(CommentRequestDto commentRequestDto) {
+        this.comment = commentRequestDto.getComment();
     }
 
-    public void updateComment(CommentRequestDto requestDto) {
-        this.comment = requestDto.getComment();
+    public Comment(Hobby hobby, CommentRequestDto commentRequestDto, User user) {
+        this.hobby = hobby;
+        this.comment = commentRequestDto.getComment();
+        this.user = user;
     }
 }

@@ -9,6 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CommentRequestDto {
     private String comment;
-//    private Long hobbyId;
-//    private Hobby hobby;
+    private Long hobbyId;
 }
