@@ -15,11 +15,10 @@ public class Comment extends Timestamped{
     private Long id;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn
     private Hobby hobby; // 개수가 세어지는지 확인이 필요합니다.
 
     @Column(nullable = false)

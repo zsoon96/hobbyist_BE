@@ -137,7 +137,7 @@ public class HobbyService {
 
         // Base64를 디코딩해서 이미지 파일로 만들어 줍니다.
         String imageName = String.valueOf(id) + ".jpg";
-        String path = "..\\images\\";
+        String path = "../images/";
 
         try {
             // 폴더를 생성합니다.
@@ -168,7 +168,7 @@ public class HobbyService {
     // 이미지 삭제
     private void deleteImage(Long id){
         String imageName = String.valueOf(id) + ".jpg";
-        String path = "..\\images\\";
+        String path = "../images/";
 
         File deleteFile = new File(path + imageName);
 

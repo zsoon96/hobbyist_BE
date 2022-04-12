@@ -5,6 +5,7 @@ import com.sparta.miniproject.security.UserDetailsImpl;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Formula;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
 import java.util.List;
@@ -20,8 +21,11 @@ public class Hobby extends Timestamped {
     @Column(nullable = false)
     private String title;
 
+    @Value("${url.path}")
+    private String address;
+
     @Column(nullable = false)
-    private String img = "/images/default.jpg"; // 초기값 설정이 필요합니다.
+    private String img = address + "images/default.jpg";
 
     @Column(nullable = false)
     private String content;
@@ -36,7 +40,7 @@ public class Hobby extends Timestamped {
     private List<Comment> comments;
 
     // Formula 에 대해서는 추가적인 검증 작업이 필요합니다. 테스트에 관한 것은 팀원들과 협력해 보도록 합시다.
-    @Formula("(SELECT count(1) FROM Comment comment WHERE comment.hobby_id = id)")
+    @Formula("(SELECT count(1) FROM comment cmt WHERE cmt.hobby_id = id)")
     private int commentsCount;
 
     public Hobby(UserDetailsImpl userDetails, HobbyRequestDto requestDto){
