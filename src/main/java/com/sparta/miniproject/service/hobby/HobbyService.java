@@ -27,8 +27,11 @@ public class HobbyService {
     private HobbyRepository hobbyRepository;
     @Autowired
     private UserRepository userRepository;
+    @Value("${url.path}")
+    private String preAddress;
 
     // 게시글 생성
+    @Transactional
     public StatusResponseDto createHobby(HobbyRequestDto requestDto, UserDetailsImpl userDetails) {
 
         // 유효성 검사 시행 필요( 내용 확인, 유저 로그인 상태 검증 )
@@ -36,15 +39,18 @@ public class HobbyService {
 
         // 회원정보에 따라 HobbyRequestDto의 nickname을 Set
         requestDto.setNickname(userRepository.findByUsername(userDetails.getUsername())
-                .orElseThrow(()-> new NullPointerException("접근 권한이 없습니다.")).getNickname());
+                .orElseThrow(()-> new NullPointerException("로그인을 확인해 주세요.")).getNickname());
 
-        Hobby hobby = hobbyRepository.save(new Hobby(userDetails, requestDto));
-
-        // 이미지 저장
-        setImage(requestDto, hobby);
-
-        // DB 저장 및 반환
-        return new StatusResponseDto(hobby);
+        //
+        if ( requestDto.getImg() == null ){
+            return new StatusResponseDto(hobbyRepository.save(new Hobby(userDetails, requestDto)));
+        } else {
+            // 이미지 저장 및 업데이트 시행
+            Hobby hobby = hobbyRepository.save(new Hobby(userDetails, requestDto));
+            requestDto = uploadImage(requestDto, hobby.getId());
+            hobby.update(requestDto);
+            return new StatusResponseDto(hobby);
+        }
     }
 
     // 게시글 수정
@@ -52,12 +58,17 @@ public class HobbyService {
     public StatusResponseDto update(Long hobbyId, HobbyRequestDto requestDto, UserDetailsImpl userDetails) {
 
         // 유효성 검사 시행 필요 ( 내용 확인 및 회원 일치여부 검사 )
+        isValidCreateValue(requestDto, userDetails);
+
+        // 게시글 확인
         Hobby hobby = hobbyRepository.findById(hobbyId).orElseThrow(
                 () -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
         );
 
-        if ( !hobby.getUser().getUsername().equals(userDetails.getUsername())){
-            throw new NullPointerException("접근 권한이 없습니다."); // 아직 적절한 오류 구문을 찾지 못하였습니다. 찾아서 수정해 주도록 합니다.
+        // 이미지 변경시 업데이트 시행
+        if ( requestDto.getImg() != null ){
+            deleteImage(hobbyId);
+            uploadImage(requestDto, hobbyId);
         }
 
         // 게시글 업데이트 시행 및 반환
@@ -73,6 +84,10 @@ public class HobbyService {
         if ( !userRepository.findByHobbies(hobby).getUsername().equals(userDetails.getUsername()) ){
             throw new NullPointerException("접근 권한이 없습니다."); // 아직 적절한 오류 구문을 찾지 못하였습니다. 찾아서 수정해 주도록 합니다.
         };
+        // 이미지 삭제
+        deleteImage(hobbyId);
+
+        // 게시글 삭제
         hobbyRepository.deleteById(hobbyId);
         return new StatusResponseDto(hobbyId);
     }
@@ -105,58 +120,58 @@ public class HobbyService {
     private HobbyRequestDto isValidCreateValue(HobbyRequestDto requestDto, UserDetailsImpl userDetails){
 
         // 로그인 검증
-        try{
-            System.out.println(userDetails.getUser().getUsername());
-        } catch (Exception e){
+        if ( userDetails.getUser().getUsername() == null ){
             throw new IllegalArgumentException("로그인을 확인해 주세요.");
         }
-
+        // 내용 검증
+        if ( requestDto.getContent().trim().equals("")) {
+            throw new IllegalArgumentException("내용 입력을 확인해 주세요.");
+        }
         return requestDto;
     }
 
-    // 게시물 번호를 받아와야 합니다.
-    private void setImage(HobbyRequestDto requestDto, Hobby hobby){
+    // 이미지 등록
+    private HobbyRequestDto uploadImage(HobbyRequestDto requestDto, Long id){
 
-        ////////////////////////////////////////////////////////////////
-        // Base64 image파일 디코딩 및 디렉토리 설정, DB에는 주소만 할당해 저장 //
-        ////////////////////////////////////////////////////////////////
-
-        // 전송한 이미지가 있을 시에 수행합니다. 이에 대한 판별이 필요합니다.
         String encodedImage = requestDto.getImg();
-        Long id = hobby.getId();
 
-        if ( encodedImage != null ){
-            // Base64를 디코딩해서 이미지 파일로 만들기
-            String imageName = "image.jpg";
-            String prePath = "..\\" + String.valueOf(id) + "\\";
-            File Folder = new File(prePath);
-            if (!Folder.exists()) {
-                try{
-                    Folder.mkdir(); //폴더 생성합니다.
-                }
-                catch(Exception e){
+        // Base64를 디코딩해서 이미지 파일로 만들어 줍니다.
+        String imageName = String.valueOf(id) + ".jpg";
+        String path = "..\\images\\";
 
-                }
-            }
+        try {
+            // 폴더를 생성합니다.
+            File folder = new File(path);
+            if (!folder.exists()) { folder.mkdir(); }
 
-            try {
-                String imageBase64 = encodedImage.split(",")[1]; // base64 스트링을 저장
-                byte[] decode = Base64.decode(imageBase64);
-                FileOutputStream fos;
-                // 만들어진 이미지 파일을 저장할 디렉토리 생성
-                // 이미지 파일 저장
-                File path = new File(prePath + imageName); // 해당 경로에 파일을 생성한다. 아직 비어있다.
-                fos = new FileOutputStream(path);
-                fos.write(decode); // 이를 통해 생성된 파일의 내용을 작성한다.
-                fos.close(); // 파일을 닫는다.
+            // base64 인코딩 스트링을 저장
+            String imageBase64 = encodedImage.split(",")[1];
+            byte[] decode = Base64.decode(imageBase64);
+            FileOutputStream fos;
 
-                // requestDto에 이미지 저장 경로로 할당
+            // 이미지 파일 저장
+            File file = new File(path + imageName); // 해당 경로에 파일을 생성한다. 아직 비어있다.
+            fos = new FileOutputStream(file);
+            fos.write(decode); // 이를 통해 생성된 파일의 내용을 작성한다.
+            fos.close(); // 파일을 닫는다.
 
-            } catch (IOException e){ // IOException에 대해서 반드시 예외처리를 해야 합니다.
+            // 이미지 주소 지정(꼭 설정해 주도록 합니다.)
+            requestDto.setImg(preAddress + "images/" + imageName);
 
-                throw new IllegalArgumentException("이미지 파일의 형식이 올바르지 않습니다.");
+            return requestDto;
 
-            }
+        } catch (IOException e){ // IOException에 대해서 반드시 예외처리를 해야 합니다.
+            throw new IllegalArgumentException("이미지 파일의 형식이 올바르지 않습니다.");
         }
+    }
+
+    // 이미지 삭제
+    private void deleteImage(Long id){
+        String imageName = String.valueOf(id) + ".jpg";
+        String path = "..\\images\\";
+
+        File deleteFile = new File(path + imageName);
+
+        if ( deleteFile.exists() ){ deleteFile.delete(); }
     }
 }

@@ -21,7 +21,7 @@ public class Hobby extends Timestamped {
     private String title;
 
     @Column(nullable = false)
-    private String img;
+    private String img = "/images/default.jpg"; // 초기값 설정이 필요합니다.
 
     @Column(nullable = false)
     private String content;
@@ -41,7 +41,6 @@ public class Hobby extends Timestamped {
 
     public Hobby(UserDetailsImpl userDetails, HobbyRequestDto requestDto){
         this.title = requestDto.getTitle();
-        this.img = "basic address"; // 게시글 번호가 포함되는 이미지 주소로 수정되어야 함 ex. http://shop-sj.com/static/image/{hobbyId}
         this.content = requestDto.getContent();
         this.url = requestDto.getUrl();
         this.user = userDetails.getUser();
