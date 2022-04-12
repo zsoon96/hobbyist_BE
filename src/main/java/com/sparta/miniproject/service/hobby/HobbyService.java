@@ -10,6 +10,7 @@ import com.sparta.miniproject.repository.UserRepository;
 import com.sparta.miniproject.security.UserDetailsImpl;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -37,8 +38,13 @@ public class HobbyService {
         requestDto.setNickname(userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(()-> new NullPointerException("접근 권한이 없습니다.")).getNickname());
 
+        Hobby hobby = hobbyRepository.save(new Hobby(userDetails, requestDto));
+
+        // 이미지 저장
+        setImage(requestDto, hobby);
+
         // DB 저장 및 반환
-        return new StatusResponseDto(hobbyRepository.save(new Hobby(userDetails, requestDto)));
+        return new StatusResponseDto(hobby);
     }
 
     // 게시글 수정
@@ -105,17 +111,34 @@ public class HobbyService {
             throw new IllegalArgumentException("로그인을 확인해 주세요.");
         }
 
+        return requestDto;
+    }
+
+    // 게시물 번호를 받아와야 합니다.
+    private void setImage(HobbyRequestDto requestDto, Hobby hobby){
+
         ////////////////////////////////////////////////////////////////
         // Base64 image파일 디코딩 및 디렉토리 설정, DB에는 주소만 할당해 저장 //
         ////////////////////////////////////////////////////////////////
 
         // 전송한 이미지가 있을 시에 수행합니다. 이에 대한 판별이 필요합니다.
         String encodedImage = requestDto.getImg();
+        Long id = hobby.getId();
 
         if ( encodedImage != null ){
             // Base64를 디코딩해서 이미지 파일로 만들기
             String imageName = "image.jpg";
-            String prePath = "C:\\Users\\unbea\\Desktop\\";
+            String prePath = "..\\" + String.valueOf(id) + "\\";
+            File Folder = new File(prePath);
+            if (!Folder.exists()) {
+                try{
+                    Folder.mkdir(); //폴더 생성합니다.
+                }
+                catch(Exception e){
+
+                }
+            }
+
             try {
                 String imageBase64 = encodedImage.split(",")[1]; // base64 스트링을 저장
                 byte[] decode = Base64.decode(imageBase64);
@@ -135,7 +158,5 @@ public class HobbyService {
 
             }
         }
-        requestDto.setImg("basic address");
-        return requestDto;
     }
 }

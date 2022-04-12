@@ -19,14 +19,14 @@ import java.util.Map;
 public class RestLogoutSucccessHandler implements LogoutSuccessHandler {
 
     @Autowired
-    UserResponseHandler userResponseHandlerHandler;
+    UserResponseHandler userResponseHandler;
 
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse httpServletResponse, Authentication authentication)
             throws IOException, ServletException{
 
-        httpServletResponse = userResponseHandlerHandler.setResponse(httpServletResponse);
-        Map<String,Object> response = userResponseHandlerHandler.setMessage("로그아웃이 완료되었습니다.", HttpStatus.OK);
+        httpServletResponse = userResponseHandler.setResponse(httpServletResponse);
+        Map<String,Object> response = userResponseHandler.setMessage("로그아웃이 완료되었습니다.", HttpStatus.OK);
 
         OutputStream out = httpServletResponse.getOutputStream();
         ObjectMapper mapper = new ObjectMapper();

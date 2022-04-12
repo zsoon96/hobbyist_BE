@@ -41,7 +41,7 @@ public class Hobby extends Timestamped {
 
     public Hobby(UserDetailsImpl userDetails, HobbyRequestDto requestDto){
         this.title = requestDto.getTitle();
-        this.img = requestDto.getImg();
+        this.img = "basic address"; // 게시글 번호가 포함되는 이미지 주소로 수정되어야 함 ex. http://shop-sj.com/static/image/{hobbyId}
         this.content = requestDto.getContent();
         this.url = requestDto.getUrl();
         this.user = userDetails.getUser();

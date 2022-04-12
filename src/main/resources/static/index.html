@@ -226,7 +226,35 @@
             })
         }
 
+        function attachFile(){
 
+            let imageInput = $("#imageInput")[0];
+
+            let reader = new FileReader();
+            let img;
+            reader.readAsDataURL(imageInput.files[0]);
+            reader.onload = function () {
+                img = reader.result;
+                let title = "이미지파일 전달";
+                let content = "이미지파일 전달";
+                let url = "http://hgok.co.kr";
+
+                let data = {'img':img, 'title':title, 'content': content, 'url': url};
+
+                $.ajax({
+                    type:"POST",
+                    url: "/api/hobby",
+                    contentType: "application/json",
+                    data: JSON.stringify(data),
+                    success: function(response){
+                        console.log(response)
+                    }
+                })
+            };
+            reader.onerror = function (error) {
+                console.log('Error: ', error);
+            };
+        }
     </script>
 
 </head>
@@ -277,5 +305,20 @@
 <br>
 <h1>이미지 업로드 테스트</h1>
 <button onclick="imageUpload()">image</button>
+<h1>이미지 Base64 인코딩 테스트</h1>
+<div>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="imageInput"/>
+    </form>
+    <hr />
+    <button onclick="attachFile()">
+        업로드
+    </button>
+    <hr />
+    <p>
+        업로드결과:
+    </p>
+    <p id="resultUploadPath"></p>
+</div>
 </body>
 </html>
