@@ -30,25 +30,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) {
         web
                 .ignoring()
-                .antMatchers("/index.html")
-                .antMatchers("/h2-console/**"); // h2 콘솔은 보안에서 예외처리
+                .antMatchers("/h2-console/**");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 // 회원 관리 처리 API (POST /user/**) 에 대해 CSRF 무시
-        http.csrf()
-//                .ignoringAntMatchers("/user/**");
-        .disable();
+        http.csrf().disable();
         http.formLogin().disable();
         http.addFilterAt(getAuthenticationFilter(), RestUsernamePasswordAuthenticationFilter.class);
 
         http.authorizeRequests()
-// image 폴더를 login 없이 허용
+                .antMatchers("/").permitAll()
                 .antMatchers("/images/**").permitAll()
-// css 폴더를 login 없이 허용
-                .antMatchers("/css/**").permitAll()
-// 회원 관리 처리 API 전부를 login 없이 허용
+                .antMatchers("/api/**").permitAll()
                 .antMatchers("/user/**").permitAll()
 // 그 외 어떤 요청이든 '인증'
                 .anyRequest().authenticated()
@@ -58,18 +53,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // 로그아웃 처리 URL
                 .logoutUrl("/user/logout")
                 .logoutSuccessHandler(restLogoutSucccessHandler)
-                .logoutSuccessUrl("/").permitAll()
-                .and()
-                .exceptionHandling()
-                .accessDeniedPage("/forbiden.html");
+                .logoutSuccessUrl("/")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID").permitAll();
     }
 
     protected RestUsernamePasswordAuthenticationFilter getAuthenticationFilter(){
         RestUsernamePasswordAuthenticationFilter authFilter = new RestUsernamePasswordAuthenticationFilter();
         try{
-            authFilter.setFilterProcessesUrl("/user/login"); // 로그인에 대한 POST 요청을 받을 url을 정의합니다. 해당 코드가 없으면 정상적으로 작동하지 않습니다.
             authFilter.setUsernameParameter("username");
             authFilter.setPasswordParameter("password");
+            authFilter.setFilterProcessesUrl("/user/login"); // 로그인에 대한 POST 요청을 받을 url을 정의합니다. 해당 코드가 없으면 정상적으로 작동하지 않습니다.
             authFilter.setAuthenticationManager(this.authenticationManagerBean());
             authFilter.setAuthenticationFailureHandler(restAuthenticationFailureHandler);
             authFilter.setAuthenticationSuccessHandler(restAuthenticationSuccessHandler);

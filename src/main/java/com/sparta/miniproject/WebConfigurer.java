@@ -26,7 +26,10 @@ public class WebConfigurer implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping(frondPath);
+
+        registry.addMapping("/**")
+                .allowedOriginPatterns("/**")
+                .allowedMethods("*");
     }
 
 }

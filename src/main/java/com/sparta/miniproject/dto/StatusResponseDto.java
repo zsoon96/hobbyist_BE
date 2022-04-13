@@ -16,9 +16,7 @@ public class StatusResponseDto {
     private String http  = String.valueOf(HttpStatus.OK);
     private String message;
 
-    public StatusResponseDto(User user){
-        this.message = "회원가입에 성공했습니다.";
-    }
+    public StatusResponseDto(User user){ this.message = "회원가입에 성공했습니다."; }
 
     public StatusResponseDto(Hobby hobby){
         this.message = "게시물 생성을 완료했습니다.";

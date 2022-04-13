@@ -26,6 +26,13 @@ public class CommentService {
 
     // 댓글 생성 로직 - User만 생성가능
     public StatusResponseDto postComment(Long hobbyId, CommentRequestDto commentRequestDto, UserDetailsImpl userDetails) {
+        // 로그인 여부 검증
+        try {
+            userDetails.getUsername();
+        } catch (Exception e) {
+            throw new IllegalArgumentException("접근권한이 없습니다.");
+        }
+
         // hobbyId로 Repo에서 해당 hooby 객체를 찾아 넣은 'hobby' 객체를 생성
         Hobby hobby = hobbyRepository.findById(hobbyId).orElseThrow(()-> new IllegalArgumentException("게시글이 없습니다."));
         // userDetails에서 유저 정보를 찾아 user 객체에 담아줌
@@ -38,17 +45,24 @@ public class CommentService {
 
     // 댓글 조회 로직 - 모두 조회가능
     public List<CommentResponseDto> getComment(Long hobbyId, UserDetailsImpl userDetails) {
+        Hobby hobby = hobbyRepository.findById(hobbyId)
+                .orElseThrow(() -> new NullPointerException("게시글이 없습니다."));
         // hobbyId를 통해 해당 게시글의 comment들 repo에서 불러오기
-        List<Comment> commentList = commentRepository.findByHobbyIdOrderByModifiedAtDesc(hobbyId); // comment 리스트
+        List<Comment> commentList = commentRepository.findAllByHobbyOrderByModifiedAtDesc(hobby); // comment 리스트
         // comment에 nickname까지 담아서 응답해줄 commentResponseDto 리스트 생성 후 초기화
         List<CommentResponseDto> commentResonseDto = new ArrayList<>();
 
-        // comment 리스트를 반복문을 통해 하나씩 빼서 ResponseDto에 담아주고
-        // commentResponseDto 리스트에 추가 후 반환
-        for (Comment comment : commentList) {
-            CommentResponseDto responseDto = new CommentResponseDto(comment,
-                    comment.getUser().getUsername().equals(userDetails.getUsername()));
-            commentResonseDto.add(responseDto);
+        try {
+            for (Comment comment : commentList) {
+                CommentResponseDto responseDto = new CommentResponseDto(comment,
+                        comment.getUser().getUsername().equals(userDetails.getUsername()));
+                commentResonseDto.add(responseDto);
+            }
+        } catch (Exception e) {
+            for (Comment comment : commentList) {
+                CommentResponseDto responseDto = new CommentResponseDto(comment, false);
+                commentResonseDto.add(responseDto);
+            }
         }
 
         return commentResonseDto;
@@ -62,8 +76,12 @@ public class CommentService {
         );
 
         // 수정 권한 확인
-        if (!comment.getUser().getUsername().equals(userDetails.getUsername())) {
-            throw new IllegalArgumentException("작성자만 수정 가능합니다.");
+        try{
+            if (!comment.getUser().getUsername().equals(userDetails.getUsername())) {
+                throw new IllegalArgumentException("작성자만 수정 가능합니다.");
+            }
+        } catch (Exception e) {
+            throw new IllegalArgumentException("접근권한이 없습니다.");
         }
         comment.updateComment(commentRequestDto);
 
@@ -75,9 +93,13 @@ public class CommentService {
         Comment comment = commentRepository.findById(commentId).orElseThrow(
                 () -> new IllegalArgumentException("댓글이 없습니다.")
         );
-
-        if (!comment.getUser().getUsername().equals(userDetails.getUsername())) {
-            throw new IllegalArgumentException("작성자만 삭제 가능합니다.");
+        try{
+            if (!comment.getUser().getUsername().equals(userDetails.getUsername())) {
+                throw new IllegalArgumentException("작성자만 삭제 가능합니다.");
+            }
+        }
+        catch (Exception e){
+            throw new IllegalArgumentException("접근권한이 없습니다.");
         }
 
         commentRepository.deleteById(commentId);

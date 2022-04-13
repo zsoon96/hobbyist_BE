@@ -19,7 +19,7 @@ public class Comment extends Timestamped{
 
     @ManyToOne
     @JoinColumn
-    private Hobby hobby; // 개수가 세어지는지 확인이 필요합니다.
+    private Hobby hobby;
 
     @Column(nullable = false)
     private String comment;

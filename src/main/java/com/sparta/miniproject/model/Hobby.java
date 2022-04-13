@@ -39,7 +39,6 @@ public class Hobby extends Timestamped {
     @OneToMany(mappedBy = "hobby", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Comment> comments;
 
-    // Formula 에 대해서는 추가적인 검증 작업이 필요합니다. 테스트에 관한 것은 팀원들과 협력해 보도록 합시다.
     @Formula("(SELECT count(1) FROM comment cmt WHERE cmt.hobby_id = id)")
     private int commentsCount;
 

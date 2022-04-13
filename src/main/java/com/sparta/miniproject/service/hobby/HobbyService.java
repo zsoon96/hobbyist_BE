@@ -62,7 +62,7 @@ public class HobbyService {
 
         // 게시글 확인
         Hobby hobby = hobbyRepository.findById(hobbyId).orElseThrow(
-                () -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
+                () -> new IllegalArgumentException("게시글이 없습니다.")
         );
 
         // 이미지 변경시 업데이트 시행
@@ -80,7 +80,7 @@ public class HobbyService {
     public StatusResponseDto deleteHobby(Long hobbyId, UserDetailsImpl userDetails){
 
         // 유효성 검사 시행 필요 ( 회원 일치여부 검사 )
-        Hobby hobby = hobbyRepository.findById(hobbyId).orElseThrow(() -> new IllegalArgumentException("게시물이 없습니다."));
+        Hobby hobby = hobbyRepository.findById(hobbyId).orElseThrow(() -> new IllegalArgumentException("게시글이 없습니다."));
         if ( !userRepository.findByHobbies(hobby).getUsername().equals(userDetails.getUsername()) ){
             throw new NullPointerException("접근 권한이 없습니다."); // 아직 적절한 오류 구문을 찾지 못하였습니다. 찾아서 수정해 주도록 합니다.
         };
@@ -108,19 +108,26 @@ public class HobbyService {
     // 게시글 상세 조회
     public HobbyDetailResponseDto getHobby(Long hobbyId, UserDetailsImpl userDetails){
 
+        boolean usable;
         // 게시글 검색
-        Hobby hobby = hobbyRepository.findById(hobbyId).orElseThrow(() -> new IllegalArgumentException("게시물이 없습니다."));
+        Hobby hobby = hobbyRepository.findById(hobbyId).orElseThrow(() -> new IllegalArgumentException("게시글이 없습니다."));
 
         // 게시글 상세 조회
-        return new HobbyDetailResponseDto(hobby,
-                userRepository.findByHobbies(hobby).getUsername().equals(userDetails.getUsername()));
+        try {
+            usable = userRepository.findByHobbies(hobby).getUsername().equals(userDetails.getUsername());
+        } catch (Exception e) {
+            usable = false;
+        }
+        return new HobbyDetailResponseDto(hobby, usable);
     }
 
     // 게시글 등록 유효성 검증
     private HobbyRequestDto isValidCreateValue(HobbyRequestDto requestDto, UserDetailsImpl userDetails){
 
         // 로그인 검증
-        if ( userDetails.getUser().getUsername() == null ){
+        try {
+            userDetails.getUser().getUsername();
+        } catch (Exception e) {
             throw new IllegalArgumentException("로그인을 확인해 주세요.");
         }
         // 내용 검증

@@ -7,5 +7,4 @@ import java.util.List;
 
 public interface HobbyRepository extends JpaRepository<Hobby, Long> {
     List<Hobby> findAllByOrderByModifiedAtDesc();
-
 }
