@@ -1,10 +1,9 @@
 package com.sparta.miniproject.dto.hobby;
 
 import com.sparta.miniproject.model.Hobby;
+import com.sparta.miniproject.utils.time.TimeConversion;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
@@ -15,7 +14,7 @@ public class HobbyDetailResponseDto {
     private String nickname;
     private String content;
     private String url;
-    private LocalDateTime date;
+    private String date;
     // 회원 여부에 따른 게시글 조작 가능 여부를 판별하기 위한 변수입니다. 팀원과 협의가 필요합니다.
     private boolean usable;
 
@@ -27,7 +26,7 @@ public class HobbyDetailResponseDto {
         this.nickname = hobby.getUser().getNickname();
         this.content = hobby.getContent();
         this.url = hobby.getUrl();
-        this.date = hobby.getModifiedAt();
+        this.date = TimeConversion.detailConversion(hobby.getModifiedAt());
         this.usable = usable;
     }
 }

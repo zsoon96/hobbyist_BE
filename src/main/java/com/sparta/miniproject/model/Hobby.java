@@ -21,7 +21,7 @@ public class Hobby extends Timestamped {
     @Column(nullable = false)
     private String title;
 
-    @Value("${url.path}")
+    @Value("${url.path}") // address가 적용되지 않으므로, 주소를 직접 설정해 주어야 합니다.
     private String address;
 
     @Column(nullable = false)
@@ -30,7 +30,7 @@ public class Hobby extends Timestamped {
     @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false)
+    @Column
     private String url;
 
     @ManyToOne
