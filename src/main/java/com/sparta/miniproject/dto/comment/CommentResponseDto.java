@@ -14,11 +14,11 @@ public class CommentResponseDto {
     private String date;
     private boolean usable;
 
-    public CommentResponseDto(Comment comment, boolean usable) {
+    public CommentResponseDto(Comment comment, boolean usable, String timeConversion) {
         this.id = comment.getId();
         this.comment = comment.getComment();
         this.nickname = comment.getUser().getNickname();
-        this.date = TimeConversion.commentConversion(comment.getModifiedAt());
+        this.date = timeConversion;
         this.usable = usable;
     }
 

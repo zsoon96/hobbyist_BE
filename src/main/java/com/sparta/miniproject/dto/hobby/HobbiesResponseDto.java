@@ -15,12 +15,12 @@ public class HobbiesResponseDto {
     private String date;
     private int commentsCount;
 
-    public HobbiesResponseDto(Hobby hobby){
+    public HobbiesResponseDto(Hobby hobby, String timeConversion){
         this.id = hobby.getId();
         this.nickname = hobby.getUser().getNickname();
         this.title = hobby.getTitle();
         this.img = hobby.getImg();
-        this.date = TimeConversion.timeConversion(hobby.getModifiedAt());
+        this.date = timeConversion;
         this.commentsCount = hobby.getCommentsCount();
     }
 }

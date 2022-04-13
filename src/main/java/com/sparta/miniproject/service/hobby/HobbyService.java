@@ -8,6 +8,7 @@ import com.sparta.miniproject.model.Hobby;
 import com.sparta.miniproject.repository.HobbyRepository;
 import com.sparta.miniproject.repository.UserRepository;
 import com.sparta.miniproject.security.UserDetailsImpl;
+import com.sparta.miniproject.utils.time.TimeConversion;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,6 +28,8 @@ public class HobbyService {
     private HobbyRepository hobbyRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private TimeConversion timeConversion;
     @Value("${url.path}")
     private String preAddress;
 
@@ -99,7 +102,9 @@ public class HobbyService {
         List<HobbiesResponseDto> responseDtos = new ArrayList<>();
 
         for ( Hobby hobby : hobbies ){
-            responseDtos.add(new HobbiesResponseDto(hobby));
+            responseDtos.add(new HobbiesResponseDto(
+                    hobby,
+                    timeConversion.timeConversion(hobby.getModifiedAt())));
         }
 
         return responseDtos;
@@ -118,7 +123,10 @@ public class HobbyService {
         } catch (Exception e) {
             usable = false;
         }
-        return new HobbyDetailResponseDto(hobby, usable);
+        return new HobbyDetailResponseDto(
+                hobby,
+                usable,
+                timeConversion.detailConversion(hobby.getModifiedAt()));
     }
 
     // 게시글 등록 유효성 검증

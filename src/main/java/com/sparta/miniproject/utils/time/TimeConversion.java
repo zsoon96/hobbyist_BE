@@ -1,13 +1,19 @@
 package com.sparta.miniproject.utils.time;
 
+import org.springframework.stereotype.Component;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 
+@Component
 public class TimeConversion {
 
-    public static String timeConversion(LocalDateTime modifiedAt) {
+    // 같은 이름의 변수가 여러번 반복되므로, 스프링에 대해 충분히 공부한 뒤 리팩토링 할 수 있는 방법을 찾도록 합니다.
+
+    // 게시글 전체 목록 조회 시간 커스텀
+    public String timeConversion(LocalDateTime modifiedAt) {
 
         LocalDateTime currentTime = LocalDateTime.now();
         Period period = Period.between(modifiedAt.toLocalDate(), currentTime.toLocalDate());
@@ -31,7 +37,8 @@ public class TimeConversion {
         return resultConversion;
     }
 
-    public static String detailConversion(LocalDateTime modifiedAt) {
+    // 게시글 상세 조회 시간 커스텀
+    public String detailConversion(LocalDateTime modifiedAt) {
         LocalDateTime currentTime = LocalDateTime.now();
         Period period = Period.between(modifiedAt.toLocalDate(), currentTime.toLocalDate());
         DateTimeFormatter formatter;
@@ -46,7 +53,8 @@ public class TimeConversion {
         return formatter.format(modifiedAt);
     }
 
-    public static String commentConversion(LocalDateTime modifiedAt) {
+    // 댓글 목록 조회 시간 커스텀
+    public String commentConversion(LocalDateTime modifiedAt) {
         LocalDateTime currentTime = LocalDateTime.now();
         Period period = Period.between(modifiedAt.toLocalDate(), currentTime.toLocalDate());
         DateTimeFormatter formatter;

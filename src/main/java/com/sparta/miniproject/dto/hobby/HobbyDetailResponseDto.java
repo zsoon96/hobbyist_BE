@@ -19,14 +19,14 @@ public class HobbyDetailResponseDto {
     private boolean usable;
 
     // 게시글 작성자와 유저 정보 일치여부를 추가적으로 받을 변수가 필요합니다.
-    public HobbyDetailResponseDto(Hobby hobby, boolean usable){
+    public HobbyDetailResponseDto(Hobby hobby, boolean usable, String timeConversion){
         this.id = hobby.getId();
         this.img = hobby.getImg();
         this.title = hobby.getTitle();
         this.nickname = hobby.getUser().getNickname();
         this.content = hobby.getContent();
         this.url = hobby.getUrl();
-        this.date = TimeConversion.detailConversion(hobby.getModifiedAt());
+        this.date = timeConversion;
         this.usable = usable;
     }
 }

@@ -16,7 +16,7 @@ public class WebConfigurer implements WebMvcConfigurer {
     private String uploadPath;
 
     @Value("${front.path}")
-    private String frondPath;
+    private String frontURL;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -28,7 +28,7 @@ public class WebConfigurer implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
 
         registry.addMapping("/**")
-                .allowedOriginPatterns("/**")
+                .allowedOriginPatterns(frontURL)
                 .allowedMethods("*");
     }
 

@@ -9,6 +9,7 @@ import com.sparta.miniproject.model.User;
 import com.sparta.miniproject.repository.CommentRepository;
 import com.sparta.miniproject.repository.HobbyRepository;
 import com.sparta.miniproject.security.UserDetailsImpl;
+import com.sparta.miniproject.utils.time.TimeConversion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,8 @@ public class CommentService {
     private CommentRepository commentRepository;
     @Autowired
     private HobbyRepository hobbyRepository;
+    @Autowired
+    private TimeConversion timeConversion;
 
     // 댓글 생성 로직 - User만 생성가능
     public StatusResponseDto postComment(Long hobbyId, CommentRequestDto commentRequestDto, UserDetailsImpl userDetails) {
@@ -54,13 +57,18 @@ public class CommentService {
 
         try {
             for (Comment comment : commentList) {
-                CommentResponseDto responseDto = new CommentResponseDto(comment,
-                        comment.getUser().getUsername().equals(userDetails.getUsername()));
+                CommentResponseDto responseDto = new CommentResponseDto(
+                        comment,
+                        comment.getUser().getUsername().equals(userDetails.getUsername()),
+                        timeConversion.commentConversion(comment.getModifiedAt()));
                 commentResonseDto.add(responseDto);
             }
         } catch (Exception e) {
             for (Comment comment : commentList) {
-                CommentResponseDto responseDto = new CommentResponseDto(comment, false);
+                CommentResponseDto responseDto = new CommentResponseDto(
+                        comment,
+                        false,
+                        timeConversion.commentConversion(comment.getModifiedAt()));
                 commentResonseDto.add(responseDto);
             }
         }
