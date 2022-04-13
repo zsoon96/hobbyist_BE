@@ -16,15 +16,26 @@ public class TimeConversion {
     public String timeConversion(LocalDateTime modifiedAt) {
 
         LocalDateTime currentTime = LocalDateTime.now();
-        Period period = Period.between(modifiedAt.toLocalDate(), currentTime.toLocalDate());
+        long timeDiff = Duration.between(modifiedAt, currentTime).getSeconds();
+        DateTimeFormatter formatter;
         String resultConversion;
 
-        if ( period.getDays() < 0 ){
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        if ( timeDiff > Duration.ofDays(365).getSeconds() ){
+
+            formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             resultConversion = formatter.format(modifiedAt);
-        }
-        else{
-            Long timeDiff = Duration.between(modifiedAt, currentTime).getSeconds();
+
+        } else if ( timeDiff > Duration.ofDays(1).getSeconds() ) {
+
+            formatter = DateTimeFormatter.ofPattern("MM. dd.");
+            resultConversion = formatter.format(modifiedAt);
+
+        } else if ( timeDiff > Duration.ofHours(12).getSeconds() ) {
+
+            formatter = DateTimeFormatter.ofPattern("오늘");
+            resultConversion = formatter.format(modifiedAt);
+
+        } else {
 
             if ((timeDiff / 60 / 60) > 0) { // 시간
                 resultConversion = timeDiff / 60 / 60 + "시간 전";
@@ -33,6 +44,7 @@ public class TimeConversion {
             } else {
                 resultConversion = timeDiff + "초 전";
             }
+
         }
         return resultConversion;
     }

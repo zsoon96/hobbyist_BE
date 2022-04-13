@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
 
-// 리팩토링이 필요합니다. 겹치는 부분은 utils 폴더 안에 합쳐두도록 합시다.
 @Component
 public class RestAuthenticationFailureHandler implements AuthenticationFailureHandler {
 

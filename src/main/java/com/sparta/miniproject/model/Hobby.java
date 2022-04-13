@@ -21,11 +21,8 @@ public class Hobby extends Timestamped {
     @Column(nullable = false)
     private String title;
 
-    @Value("${url.path}") // address가 적용되지 않으므로, 주소를 직접 설정해 주어야 합니다.
-    private String address;
-
     @Column(nullable = false)
-    private String img = address + "images/default.jpg";
+    private String img = "http://localhost:8080/images/default.jpg"; // @Value가 적용되지 않으므로, 변경이 필요합니다.
 
     @Column(nullable = false)
     private String content;

@@ -1,7 +1,6 @@
 package com.sparta.miniproject.dto.hobby;
 
 import com.sparta.miniproject.model.Hobby;
-import com.sparta.miniproject.utils.time.TimeConversion;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

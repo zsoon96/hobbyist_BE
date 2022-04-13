@@ -1,7 +1,6 @@
 package com.sparta.miniproject.dto.comment;
 
 import com.sparta.miniproject.model.Comment;
-import com.sparta.miniproject.utils.time.TimeConversion;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

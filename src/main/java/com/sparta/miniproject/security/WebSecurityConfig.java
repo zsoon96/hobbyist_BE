@@ -35,27 +35,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-// 회원 관리 처리 API (POST /user/**) 에 대해 CSRF 무시
         http.csrf().disable();
         http.formLogin().disable();
         http.addFilterAt(getAuthenticationFilter(), RestUsernamePasswordAuthenticationFilter.class);
 
         http.authorizeRequests()
-                .antMatchers("/").permitAll()
-                .antMatchers("/images/**").permitAll()
-                .antMatchers("/api/**").permitAll()
-                .antMatchers("/user/**").permitAll()
-// 그 외 어떤 요청이든 '인증'
-                .anyRequest().authenticated()
+                    .antMatchers("/").permitAll()
+                    .antMatchers("/images/**").permitAll()
+                    .antMatchers("/api/**").permitAll()
+                    .antMatchers("/user/**").permitAll()
+    // 그 외 어떤 요청이든 '인증'
+                    .anyRequest().authenticated()
                 .and()
-                // [로그아웃 기능]
-                .logout()
-                // 로그아웃 처리 URL
-                .logoutUrl("/user/logout")
-                .logoutSuccessHandler(restLogoutSucccessHandler)
-                .logoutSuccessUrl("/")
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID").permitAll();
+                    .logout()
+                    .logoutUrl("/user/logout")
+                    .logoutSuccessHandler(restLogoutSucccessHandler)
+                    .invalidateHttpSession(true)
+                    .clearAuthentication(true)
+                    .deleteCookies("JSESSIONID").permitAll();
     }
 
     protected RestUsernamePasswordAuthenticationFilter getAuthenticationFilter(){
@@ -72,6 +69,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         }
         return authFilter;
     }
-
-
 }

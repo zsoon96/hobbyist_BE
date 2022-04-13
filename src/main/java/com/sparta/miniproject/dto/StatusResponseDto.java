@@ -12,8 +12,8 @@ import org.springframework.http.HttpStatus;
 @NoArgsConstructor
 public class StatusResponseDto {
 
-    private String status = "true";
-    private String http  = String.valueOf(HttpStatus.OK);
+    private final String status = "true";
+    private final String http  = String.valueOf(HttpStatus.OK);
     private String message;
 
     public StatusResponseDto(User user){ this.message = "회원가입에 성공했습니다."; }

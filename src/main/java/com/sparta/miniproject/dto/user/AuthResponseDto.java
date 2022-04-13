@@ -10,8 +10,8 @@ import org.springframework.http.HttpStatus;
 public class AuthResponseDto {
     private String username;
     private String nickname;
-    private String status = "true";
-    private String http = String.valueOf(HttpStatus.OK);
+    private final String status = "true";
+    private final String http = String.valueOf(HttpStatus.OK);
 
     public AuthResponseDto(User user){
         this.username = user.getUsername();
